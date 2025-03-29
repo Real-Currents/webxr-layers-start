@@ -27,7 +27,7 @@
 		<script type="importmap">
 			{
 				"imports": {
-					"js/libs/": "./js/libs/",
+					"libs/": "./libs/",
 					"three": "https://unpkg.com/three@0.130.1/build/three.module.js",
 					"three/addons/": "https://unpkg.com/three@0.130.1/examples/jsm/"
 				}
@@ -37,7 +37,7 @@
 		<script type="module">
 
 			import * as THREE from 'three';
-			import { GUI } from 'public/libs/lil-gui.module.min.js';
+			import { GUI } from 'libs/lil-gui.module.min.js';
 			import { HTMLMesh } from 'three/addons/interactive/HTMLMesh.js';
 			import { InteractiveGroup } from 'three/addons/interactive/InteractiveGroup.js';
 			import { VRButton } from 'three/addons/webxr/VRButton.js';
@@ -45,7 +45,13 @@
 			import { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js';
 
 			let camera, scene, renderer;
-			let video;
+			const video = document.createElement( 'video' );
+			video.loop = true;
+			video.src = 'assets/textures/MaryOculus.webm';
+
+			console.log("Video src loaded!", video);
+
+			window.document.body.append(video);
 
 			// Four eye charts are rendered to demonstrate the differences in text quality.
 			// The two charts on the top are rendered into XRQuadLayers ( substantially more legible ).
@@ -114,6 +120,8 @@
 			animate();
 
 			function init() {
+
+				console.log("Initiate WebXR Layers scene!");
 
 				scene = new THREE.Scene();
 
@@ -286,10 +294,6 @@
 
 				window.addEventListener( 'resize', onWindowResize, false );
 
-				video = document.createElement( 'video' );
-				video.loop = true;
-				video.src = 'assets/textures/MaryOculus.webm';
-
 			}
 
 			function onWindowResize() {
@@ -322,11 +326,13 @@
 				}
 
 				if (
-					session &&
-					session.renderState.layers !== undefined &&
-					session.hasMediaLayer === undefined &&
-					video.readyState >= 2
+					session
+						&& session.renderState.layers !== undefined
+						&& session.hasMediaLayer === undefined
+						// && video.readyState >= 2
 				) {
+
+					video.play();
 
 					session.hasMediaLayer = true;
 					session.requestReferenceSpace( 'local-floor' ).then( ( refSpace ) => {

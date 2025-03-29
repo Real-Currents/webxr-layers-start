@@ -21,7 +21,6 @@
     "preview": "vite preview --host 0.0.0.0",
     "render:readme": "quarto render README.qmd --to gfm --output README.md",
     "start": "vite --host 0.0.0.0 --open",
-    "start-local": "vite --config ../vite.config.local.js",
     "test": "jest --no-cache --passWithNoTests",
     "test:clean": "jest --clearCache"
   },

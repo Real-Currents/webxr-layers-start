@@ -33,7 +33,7 @@
 //
 // Pair a BT or USB keyboard to edit code.
 // Grab with trigger to move the text field.
-// Rendered on a 1080x1920 layer. Press the grip to see non-layer rendering.
+// Rendered on a 1080x1400 layer. Press the grip to see non-layer rendering.
 
 let mesh;
 
@@ -95,6 +95,7 @@ function update( time ) {
 			mapKeys.set("s", "isDown");
 			mapKeys.set("d", "isRight");
 
+			const height = 0.75;
 			const speed = 0.05;
 			const directionVector = new THREE.Vector3();
 			function up() {
@@ -284,7 +285,7 @@ function update( time ) {
 
 				canvas = document.createElement( 'canvas' );
 				canvas.width = 1080;
-				canvas.height = 1920;
+				canvas.height = 1400;
 				canvas.style.display = 'block';
 				canvas.style.position = 'absolute';
 				canvas.style.top = '0';
@@ -305,7 +306,7 @@ function update( time ) {
 					new THREE.MeshBasicMaterial( { map: texture, opacity: 0, transparent: false } )
 				);
 				mesh.name = 'editor';
-				mesh.position.set( 0, 1.0, -0.75 );
+				mesh.position.set( 0, height, -0.75 );
 				mesh.scale.x = .25;
 				mesh.scale.y = mesh.scale.x * canvas.height / canvas.width;
 				scene.add( mesh );
@@ -518,7 +519,7 @@ function update( time ) {
 				scene.environment = new Environment( renderer );
 
 				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 20 );
-				camera.position.set( 0, 1, 0 );
+				camera.position.set( 0, height, 0 );
 
 				const controls = new OrbitControls(camera, renderer.domElement);
 				controls.enableZoom = true;
@@ -533,7 +534,7 @@ function update( time ) {
 
 				} );
 				const loader = new GLTFLoader( manager );
-				loader.setPath( 'https://cdn.glitch.com/5e12d255-24bb-4b24-bff5-fb3ba0b130d1%2F' );
+				loader.setPath( 'assets/' ); // 'https://cdn.glitch.com/5e12d255-24bb-4b24-bff5-fb3ba0b130d1%2F' );
 				loader.load( 'scene.gltf', function ( gltf ) {
 
 					gltf.scene.position.x = 2;
