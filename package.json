@@ -5,6 +5,9 @@
   "description": "WebXR Start!",
   "license": "CC0-1.0",
   "main": "src/main.js",
+  "dependencies": {
+    "three": "^0.175.0"
+  },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "",
     "@esbuild-plugins/node-modules-polyfill": "",
@@ -23,8 +26,5 @@
     "start": "vite --host 0.0.0.0 --open",
     "test": "jest --no-cache --passWithNoTests",
     "test:clean": "jest --clearCache"
-  },
-  "dependencies": {
-    "three": "^0.175.0"
   }
 }

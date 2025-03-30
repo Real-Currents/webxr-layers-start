@@ -28,8 +28,8 @@
 			{
 				"imports": {
 					"libs/": "./libs/",
-					"three": "https://unpkg.com/three@0.130.1/build/three.module.js",
-					"three/addons/": "https://unpkg.com/three@0.130.1/examples/jsm/"
+					"three": "./libs/three/build/three.module.js",
+					"three/addons/": "./libs/three/examples/jsm/"
 				}
 			}
 		</script>
@@ -48,6 +48,7 @@
 			const video = document.createElement( 'video' );
 			video.loop = true;
 			video.src = 'assets/textures/MaryOculus.webm';
+			video.style.width = "100vw";
 
 			console.log("Video src loaded!", video);
 
@@ -141,6 +142,9 @@
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				renderer.outputEncoding = THREE.sRGBEncoding;
 				renderer.xr.enabled = true;
+
+				renderer.domElement.style.position = "fixed";
+				renderer.domElement.style.top = 0;
 
 				document.body.appendChild( renderer.domElement );
 				document.body.appendChild( VRButton.createButton( renderer ) );
