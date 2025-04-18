@@ -2,9 +2,17 @@ import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfil
 import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfill";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 import shader from 'rollup-plugin-shader';
+import * as path from 'path';
 
 export default {
     base: "",
+    build: {
+        rollupOptions: {
+            input: {
+                app: path.resolve(__dirname, './src/main.js'),
+            },
+        },
+    },
     define: {
        // "process.env.MapboxAccessToken": JSON.stringify(process.env.MapboxAccessToken)
     },
