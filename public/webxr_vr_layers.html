@@ -48,8 +48,10 @@
 			let camera, scene, renderer;
 			const video = document.createElement( 'video' );
 			video.loop = true;
-			video.src = 'assets/textures/MaryOculus.webm';
+			// video.src = 'assets/textures/MaryOculus.webm';
 			// video.src = 'assets/textures/MaryOculus.mp4';
+			video.src = 'assets/videos/Lake_Champlain.webm';
+			// video.src = 'assets/videos/Lake_Champlain.mp4';
 			// video.src = 'assets/videos/SONG001_16_9.webm';
 			// video.src = 'assets/videos/SONG001_16_9.mp4';
 
@@ -341,7 +343,7 @@
 					session.requestReferenceSpace( 'local-floor' ).then( ( refSpace ) => {
 
 						// Create Quad layers for Snellen chart.
-						const glBinding = xr.getBinding();
+						const glBinding = xr.getBinding(); // returns XRWebGLBinding
 						const quadLayerConfig = {
 							width: snellenConfig.quadWidth,
 							height: snellenConfig.quadHeight,
@@ -381,16 +383,16 @@
 						const eqrtVideoHeight = 2208;
 						let eqrtVideoAngle = 96; // 110;
 						let eqrtVideoLayout = "stereo-left-right";
-						let eqrtRadius = 10;
+						let eqrtRadius = 100;
 
 						// Create background EQR video layer.
 						const mediaBinding = new XRMediaBinding(session);
 						const equirectLayer = mediaBinding.createEquirectLayer(
 								video,
 								{
+									layout: eqrtVideoLayout,
 									space: refSpace,
 									// layout: 'stereo-left-right',
-									layout: eqrtVideoLayout,
 									// viewPixelWidth: eqrtVideoWidth / (eqrtVideoLayout === "stereo-left-right" ? 2 : 1),
 									// viewPixelHeight: eqrtVideoHeight / (eqrtVideoLayout === "stereo-top-bottom" ? 2 : 1),
 									// // Rotate by 45 deg to avoid stereo conflict with the 3D geometry.
@@ -399,8 +401,8 @@
 									//   { x: 0, y: .28, z: 0, w: .96 }
 									// )
 									transform: new XRRigidTransform(
-											{},
-											{ x: -0.28, y: 0, z: 0, w: .96 }
+											{ x: 0, y: 0, z: 0 },
+											// { x: -0.28, y: 0, z: 0, w: .96 }
 									)
 								}
 						);
