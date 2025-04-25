@@ -37,11 +37,10 @@
 		<script type="module">
 
 			import * as THREE from 'three';
-			// import { GUI } from 'libs/lil-gui.module.min.js';
 			import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 			import { HTMLMesh } from 'three/addons/interactive/HTMLMesh.js';
 			import { InteractiveGroup } from 'three/addons/interactive/InteractiveGroup.js';
-			import { VRButton } from 'three/addons/webxr/VRButton.js';
+			import { XRButton as VRButton } from 'three/addons/webxr/XRButton.js';
 			import { XRControllerModelFactory } from 'three/addons/webxr/XRControllerModelFactory.js';
 			import { XRHandModelFactory } from 'three/addons/webxr/XRHandModelFactory.js';
 
@@ -340,7 +339,8 @@
 					// video.play();
 
 					session.hasMediaLayer = true;
-					session.requestReferenceSpace( 'local-floor' ).then( ( refSpace ) => {
+					session.reques
+					ReferenceSpace( 'local-floor' ).then( ( refSpace ) => {
 
 						// Create Quad layers for Snellen chart.
 						const glBinding = xr.getBinding(); // returns XRWebGLBinding
