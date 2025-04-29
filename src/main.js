@@ -237,9 +237,8 @@ setTimeout(function init () {
                let videoLayout = "stereo-left-right";
                let eqrtRadius = 10;
                const videoWidth = 2064;
-               // const videoWidth = 1032; // 2064;
                const videoHeight = 2208;
-               // const videoHeight = 1104; // 2208;
+               const videoReducer = 0.00090579710;
 
                // Create background EQR video layer.
                const mediaBinding = new XRMediaBinding(currentSession);
@@ -271,10 +270,10 @@ setTimeout(function init () {
                    {
                       layout: 'stereo-left-right',
                       // layout: videoLayout,
-                      // width: videoWidth / (videoLayout === "stereo-left-right" ? 2 : 1),\
-                      width: 3.73913,
-                      // height: videoHeight / (videoLayout === "stereo-top-bottom" ? 2 : 1),
-                      height: 4.0,
+                      // width: 3.73913,
+                      width: videoWidth * videoReducer,
+                      // height: 4.0,
+                      height: videoHeight * videoReducer,
                       space: refSpace,
                       // // Rotate by 45 deg to avoid stereo conflict with the 3D geometry.
                       // transform: new XRRigidTransform(
@@ -282,7 +281,7 @@ setTimeout(function init () {
                       //   { x: 0, y: .28, z: 0, w: .96 }
                       // )
                       transform: new XRRigidTransform(
-                          {x: 0, y: 2.0, z: -5},
+                          {x: 0, y: (videoHeight * videoReducer) / 2, z: -5},
                           // { x: -0.28, y: 0, z: 0, w: .96 }
                       )
                    }
@@ -295,16 +294,16 @@ setTimeout(function init () {
 
                currentSession.updateRenderState({
                   layers: (!!currentSession.renderState.layers.length > 0) ? [
-                     guiLayer,
+                     currentSession.renderState.layers[0],
                      // equirectLayer,
                      quadLayerVideo,
                      // quadLayerPlain,
                      // quadLayerMips,
-                     currentSession.renderState.layers[0]
+                     guiLayer
                   ] : [
-                     guiLayer,
                      // equirectLayer,
-                     quadLayerVideo
+                     quadLayerVideo,
+                     guiLayer
                   ]
                });
 
