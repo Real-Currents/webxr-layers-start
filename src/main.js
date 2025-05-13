@@ -152,14 +152,11 @@ setTimeout(function init () {
 
    scene.add(statsMesh);
 
-   video = document.createElement( 'video' );
-   video.loop = true;
-   // video.src = 'assets/textures/MaryOculus.webm';
-   // video.src = 'assets/textures/MaryOculus.mp4';
-   video.src = 'assets/videos/Lake_Champlain.webm';
-   // video.src = 'assets/videos/Lake_Champlain.mp4';
-   // video.src = 'assets/videos/SONG001_16_9.webm';
-   // video.src = 'assets/videos/SONG001_16_9.mp4';
+   video = //document.createElement( 'video' );
+       document.getElementById("video");
+   // video.loop = true;
+   // video.src = 'assets/videos/Lake_Champlain.webm';
+   // // video.src = 'assets/videos/Lake_Champlain.mp4';
 
    // video.width = previewWindow.width;
    // video.height = previewWindow.height;
@@ -342,7 +339,7 @@ setTimeout(function init () {
       //
       // }
 
-      if (currentSession !== null && guiLayer && (guiLayer.needsRedraw || guiLayer.needsUpdate)) {
+      if (currentSession !== null && !!guiLayer && (guiLayer.needsRedraw || guiLayer.needsUpdate)) {
 
          const glayer = xr.getBinding().getSubImage(guiLayer, frame);
          renderer.state.bindTexture(gl.TEXTURE_2D, glayer.colorTexture);
@@ -358,7 +355,7 @@ setTimeout(function init () {
       stats.end();
 
       statsMesh.material.map.update();
-      guiLayer.needsUpdate = true;
+      if (!!guiLayer) guiLayer.needsUpdate = true;
 
    }
 

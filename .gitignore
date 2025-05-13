@@ -34,4 +34,5 @@ _targets/
 *.csv
 *.xlsx
 
+public/assets/videos
 public/verge3d-code-examples
