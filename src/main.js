@@ -8,6 +8,8 @@ import { XRControllerModelFactory } from "three/addons/webxr/XRControllerModelFa
 import { HTMLMesh } from "three/addons/interactive/HTMLMesh";
 import Stats from "three/addons/libs/stats.module";
 
+// TODO: Use webxr-layer-polyfill and test in Wolvic (no native WebXRLayers support)...
+
 let currentSession = null;
 
 setTimeout(function init () {
@@ -71,14 +73,7 @@ setTimeout(function init () {
    renderer.setClearAlpha( 1 );
    renderer.setClearColor( new THREE.Color( 0 ), 0 );
    renderer.setSize( previewWindow.innerWidth, previewWindow.innerHeight );
-   renderer.outputEncoding = THREE.sRGBEncoding;
-   renderer.xr.enabled = true;
-
-   renderer.setPixelRatio( window.devicePixelRatio );
-   renderer.setClearAlpha( 1 );
-   renderer.setClearColor( new THREE.Color( 0 ), 0 );
-   renderer.setSize( previewWindow.innerWidth, previewWindow.innerHeight );
-   renderer.outputEncoding = THREE.sRGBEncoding;
+   // renderer.outputEncoding = THREE.sRGBEncoding;
    renderer.xr.enabled = true;
 
    renderer.domElement.style.position = "fixed";
@@ -154,12 +149,13 @@ setTimeout(function init () {
 
    video = document.createElement( 'video' );
    video.loop = true;
-   // video.src = 'assets/textures/MaryOculus.webm';
    // video.src = 'assets/textures/MaryOculus.mp4';
-   video.src = 'assets/videos/Lake_Champlain.webm';
+   // video.src = 'assets/textures/MaryOculus.webm';
    // video.src = 'assets/videos/Lake_Champlain.mp4';
-   // video.src = 'assets/videos/SONG001_16_9.webm';
+   video.src = 'assets/videos/Lake_Champlain_av1.mp4';
+   // video.src = 'assets/videos/Lake_Champlain.webm';
    // video.src = 'assets/videos/SONG001_16_9.mp4';
+   // video.src = 'assets/videos/SONG001_16_9.webm';
 
    // video.width = previewWindow.width;
    // video.height = previewWindow.height;
