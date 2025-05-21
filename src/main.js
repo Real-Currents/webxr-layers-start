@@ -8,7 +8,9 @@ import { XRControllerModelFactory } from "three/addons/webxr/XRControllerModelFa
 import { HTMLMesh } from "three/addons/interactive/HTMLMesh";
 import Stats from "three/addons/libs/stats.module";
 
-// TODO: Use webxr-layer-polyfill and test in Wolvic (no native WebXRLayers support)...
+// TODO: First comment out specific code for WebXR Layers and use threejs renderer to
+//  initialize a basic immersive scene...
+//  Then use webxr-layer-polyfill and test in Wolvic (no native WebXRLayers support)...
 
 let currentSession = null;
 
