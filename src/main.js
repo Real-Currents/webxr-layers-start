@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import { XRDevice, metaQuest3 } from 'iwer';
 import { DevUI } from '@iwer/devui';
-import { GamepadWrapper, XR_BUTTONS } from 'gamepad-wrapper';
+import { GamepadWrapper } from 'gamepad-wrapper';
 import { XRControllerModelFactory } from "three/addons/webxr/XRControllerModelFactory";
 
 import { HTMLMesh } from "three/addons/interactive/HTMLMesh";
@@ -255,7 +255,7 @@ setTimeout(function init () {
                       //   { x: 0, y: .28, z: 0, w: .96 }
                       // )
                       transform: new XRRigidTransform(
-                          {x: 0, y: 0, z: -5},
+                          {x: 0, y: -5, z: -10},
                           // { x: -0.28, y: 0, z: 0, w: .96 }
                       )
                    }
@@ -268,9 +268,9 @@ setTimeout(function init () {
                       layout: 'stereo-left-right',
                       // layout: videoLayout,
                       // width: 3.73913,
-                      width: videoWidth * videoReducer,
+                      width: videoWidth * videoReducer * 2,
                       // height: 4.0,
-                      height: videoHeight * videoReducer,
+                      height: videoHeight * videoReducer * 2,
                       space: refSpace,
                       // // Rotate by 45 deg to avoid stereo conflict with the 3D geometry.
                       // transform: new XRRigidTransform(
@@ -279,7 +279,9 @@ setTimeout(function init () {
                       // )
                       transform: new XRRigidTransform(
                           {x: 0, y: (videoHeight * videoReducer) / 2, z: -5},
-                          // { x: -0.28, y: 0, z: 0, w: .96 }
+                          {},
+                          // { x: -0.28, y: 0, z: 0, w: .96 },
+                          {}
                       )
                    }
                );
