@@ -8,6 +8,7 @@ import { XRControllerModelFactory } from "three/examples/jsm/webxr/XRControllerM
 import { VRButton } from "three/examples/jsm/webxr/VRButton.js";
 import { XRButton } from "three/examples/jsm/webxr/XRButton.js";
 
+// These definition make it possible to try different version THREE in the package deps
 const PlaneGeometry = ("PlaneBufferGeometry" in THREE) ?
    THREE.PlaneBufferGeometry : THREE.PlaneGeometry;
 
@@ -15,6 +16,7 @@ const SphereGeometry = ("SphereBufferGeometry" in THREE) ?
    THREE.SphereBufferGeometry : THREE.SphereGeometry;
 
 let currentSession = null;
+let initWithLayers = false;
 
 setTimeout(function init () {
 
@@ -530,7 +532,7 @@ setTimeout(function init () {
    };
 
    const sessionInit = {
-      optionalFeatures: [ //(typeof XRWebGLBinding !== 'undefined' && 'createProjectionLayer' in XRWebGLBinding.prototype) ? [
+      optionalFeatures: [ //(initWithLayers) ? [
       //    "local-floor",
       //    // "bounded-floor",
       //    // "hand-tracking",
@@ -544,7 +546,8 @@ setTimeout(function init () {
    };
 
    async function onSessionStarted (session) {
-      await renderer.xr.setSession(session);
+      const useLayers =  initWithLayers && (typeof XRWebGLBinding !== 'undefined' && 'createProjectionLayer' in XRWebGLBinding.prototype);
+      await renderer.xr.setSession(session, useLayers);
       currentSession = session;
       currentSession.addEventListener("end", onSessionEnded);
    }
@@ -581,10 +584,13 @@ setTimeout(function init () {
 
       let session = null;
 
+      const useLayers =  initWithLayers && (typeof XRWebGLBinding !== 'undefined' && 'createProjectionLayer' in XRWebGLBinding.prototype);
       try {
-         session = await (xr.requestSession("immersive-ar", sessionInit));
-      } catch (e) {
-         session = await (xr.requestSession("immersive-vr", sessionInit));
+         if (!useLayers) {
+            session = await (xr.requestSession("immersive-vr", sessionInit));
+         } else {
+            session = await (xr.requestSession("immersive-ar", sessionInit));
+         }
       } finally {
 
          previewWindow.width = window.innerWidth;
@@ -610,6 +616,8 @@ setTimeout(function init () {
 
       const delta = clock.getDelta();
       const time = clock.getElapsedTime();
+
+
 
       // Does xr object exist?
       let nativeWebXRSupport = "xr" in navigator;
