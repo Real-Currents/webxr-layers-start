@@ -16,7 +16,7 @@ const SphereGeometry = ("SphereBufferGeometry" in THREE) ?
    THREE.SphereBufferGeometry : THREE.SphereGeometry;
 
 let currentSession = null;
-let initWithLayers = false;
+let initWithLayers = true;
 
 setTimeout(function init () {
 
@@ -591,6 +591,8 @@ setTimeout(function init () {
          } else {
             session = await (xr.requestSession("immersive-ar", sessionInit));
          }
+      } catch (e) {
+         session = await (xr.requestSession("immersive-vr", sessionInit));
       } finally {
 
          previewWindow.width = window.innerWidth;
