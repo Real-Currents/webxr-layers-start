@@ -115,8 +115,8 @@ setTimeout(function init () {
     // Setup Stats
     const stats = new Stats();
     stats.showPanel(0);
-    stats.dom.style.maxWidth = "100px";
-    stats.dom.style.minWidth = "100px";
+    stats.dom.style.maxWidth = "64px";
+    stats.dom.style.minWidth = "60px";
     stats.dom.style.backgroundColor = "black";
     document.body.appendChild(stats.dom);
 
@@ -155,7 +155,7 @@ setTimeout(function init () {
 
         scene.add(statsMesh);
 
-        videoLayerManager.initVideoLayer(false);
+        videoLayerManager.initVideoLayer(false, renderer, scene, currentSession);
 
         renderer.setAnimationLoop(function render (t, frame ) {
 
@@ -186,43 +186,17 @@ setTimeout(function init () {
                 )
             ) {
 
-               currentSession.hasMediaLayer = true;
+                console.log("Set media layer to true on currentSession:", currentSession);
 
-               console.log("Set media layer to true on currentSession:", currentSession);
+                currentSession.hasMediaLayer = true;
 
-               console.log("Make gl context XR compatible: ", gl.makeXRCompatible);
+                console.log("Make gl context XR compatible: ", gl.makeXRCompatible);
 
-               gl.makeXRCompatible().then(() => {
+                gl.makeXRCompatible().then(() => {
 
-                  const glBinding = xr.getBinding(); // returns XRWebGLBinding
+                    const glBinding = xr.getBinding(); // returns XRWebGLBinding
 
                    currentSession.requestReferenceSpace('local-floor').then((refSpace) => {
-
-                     // // Create Quad layers for Snellen chart.
-                     // const quadLayerConfig = {
-                     //    width: snellenConfig.quadWidth,
-                     //    height: snellenConfig.quadHeight,
-                     //    viewPixelWidth: snellenConfig.textureSizePx,
-                     //    viewPixelHeight: snellenConfig.textureSizePx,
-                     //    isStatic: true,
-                     //    space: refSpace,
-                     //    layout: 'mono',
-                     //    transform: new XRRigidTransform( {
-                     //       x: snellenConfig.x - snellenConfig.widthMeters,
-                     //       y: snellenConfig.y + snellenConfig.heightMeters,
-                     //       z: snellenConfig.z
-                     //    } )
-                     // };
-                     //
-                     // quadLayerPlain = glBinding.createQuadLayer( quadLayerConfig );
-                     //
-                     // quadLayerConfig.mipLevels = 3;
-                     // quadLayerConfig.transform = new XRRigidTransform({
-                     //    x: snellenConfig.x + snellenConfig.widthMeters,
-                     //    y: snellenConfig.y + snellenConfig.heightMeters,
-                     //    z: snellenConfig.z
-                     // });
-                     // quadLayerMips = glBinding.createQuadLayer( quadLayerConfig );
 
                      // Create GUI layer.
                      guiLayer = glBinding.createQuadLayer({
@@ -233,117 +207,26 @@ setTimeout(function init () {
                         space: refSpace,
                         transform: new XRRigidTransform(statsMesh.position, statsMesh.quaternion)
                      });
-
-                     let videoAngle = 96; // 110;
-                     let videoLayout = "stereo-left-right";
-                     let eqrtRadius = 10;
-                     const videoWidth = 2064;
-                     const videoHeight = 2208;
-                     const videoReducer = 0.00090579710;
-
-                     // Create background EQR video layer.
-                     const mediaBinding = new XRMediaBinding(currentSession);
-
-                    //  console.log("Create XREquirectLayer with XRMediaBinding");
-                    //  equirectLayer = mediaBinding.createEquirectLayer(
-                    //      video,
-                    //      {
-                    //         // layout: 'stereo-left-right',
-                    //         layout: videoLayout,
-                    //         viewPixelWidth: videoWidth / (videoLayout === "stereo-left-right" ? 2 : 1),
-                    //         viewPixelHeight: videoHeight / (videoLayout === "stereo-top-bottom" ? 2 : 1),
-                    //         space: refSpace,
-                    //         // // Rotate by 45 deg to avoid stereo conflict with the 3D geometry.
-                    //         // transform: new XRRigidTransform(
-                    //         //   {},
-                    //         //   { x: 0, y: .28, z: 0, w: .96 }
-                    //         // )
-                    //         transform: new XRRigidTransform(
-                    //             {x: 0, y: -5, z: -10},
-                    //             // { x: -0.28, y: 0, z: 0, w: .96 }
-                    //         )
-                    //      }
-                    //  );
-                    //
-                    // equirectLayer.centralHorizontalAngle = Math.PI * videoAngle / 180;
-                    // equirectLayer.upperVerticalAngle = (Math.PI * videoAngle / 180) * 0.5; // Math.PI / 2.0 * 0.5;
-                    // equirectLayer.lowerVerticalAngle = -(Math.PI * videoAngle / 180) * 0.5; // -Math.PI / 2.0 * 0.5;
-                    // equirectLayer.radius = eqrtRadius;
-
-                     console.log("Create XRQuadLayer with XRMediaBinding");
-                     quadLayerVideo = mediaBinding.createQuadLayer(
-                         video,
-                         {
-                            layout: 'stereo-left-right',
-                            // layout: videoLayout,
-                            // width: 3.73913,
-                            width: videoWidth * videoReducer * 2,
-                            // height: 4.0,
-                            height: videoHeight * videoReducer * 2,
-                            space: refSpace,
-                            // // Rotate by 45 deg to avoid stereo conflict with the 3D geometry.
-                            // transform: new XRRigidTransform(
-                            //   {},
-                            //   { x: 0, y: .28, z: 0, w: .96 }
-                            // )
-                            transform: new XRRigidTransform(
-                                {x: 0, y: (videoHeight * videoReducer) / 2, z: -5},
-                                {},
-                                // { x: -0.28, y: 0, z: 0, w: .96 },
-                                {}
-                            )
-                         }
-                     );
+                     
+                     quadLayerVideo = videoLayerManager.initVideoLayer(true, renderer, scene, currentSession, refSpace);
 
                      currentSession.updateRenderState({
                         layers: (!!currentSession.renderState.layers.length > 0) ? [
                             quadLayerVideo,
-                            // quadLayerPlain,
-                            // quadLayerMips,
-                            // equirectLayer,
+                            // equirectLayerVideo,
                             guiLayer,
                             currentSession.renderState.layers[0]
                         ] : [
                             quadLayerVideo,
-                            // equirectLayer,
+                            // equirectLayerVideo,
                             guiLayer
                         ]
                      });
 
-                  })
+                  });
                });
 
             }
-
-            // // Copy image to layers as required.
-            // // needsRedraw is set on creation or if the underlying GL resources of a layer are lost.
-            // if ( session && quadLayerPlain && quadLayerPlain.needsRedraw ) {
-            //
-            //    const glayer = xr.getBinding().getSubImage( quadLayerPlain, frame );
-            //    renderer.state.bindTexture( gl.TEXTURE_2D, glayer.colorTexture );
-            //    gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, true );
-            //    gl.texSubImage2D( gl.TEXTURE_2D, 0,
-            //        ( snellenConfig.textureSizePx - snellenConfig.widthPx ) / 2,
-            //        ( snellenConfig.textureSizePx - snellenConfig.heightPx ) / 2,
-            //        snellenConfig.widthPx, snellenConfig.heightPx,
-            //        gl.RGBA, gl.UNSIGNED_BYTE, snellenTexture.image );
-            //
-            // }
-            //
-            // // Same as above but also gl.generateMipmap.
-            // if ( session && quadLayerMips && quadLayerMips.needsRedraw ) {
-            //
-            //    const glayer = xr.getBinding().getSubImage( quadLayerMips, frame );
-            //    renderer.state.bindTexture( gl.TEXTURE_2D, glayer.colorTexture );
-            //    gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, true );
-            //    gl.texSubImage2D( gl.TEXTURE_2D, 0,
-            //        ( snellenConfig.textureSizePx - snellenConfig.widthPx ) / 2,
-            //        ( snellenConfig.textureSizePx - snellenConfig.heightPx ) / 2,
-            //        snellenConfig.widthPx, snellenConfig.heightPx,
-            //        gl.RGBA, gl.UNSIGNED_BYTE, snellenTexture.image );
-            //    gl.generateMipmap( gl.TEXTURE_2D );
-            //
-            // }
 
             if (currentSession !== null && !!guiLayer && (guiLayer.needsRedraw || guiLayer.needsUpdate)) {
 
@@ -365,32 +248,25 @@ setTimeout(function init () {
         });
     }
 
-    function createVideoLayerManager (scene, vid) {
+    function createVideoLayerManager (video) {
 
-        const glVideoLayer = new THREE.Group();
-        const xrVideoLayer = null;
+        let webGLVideo = new THREE.Group();
+        let webXRLayerVideo = null;
 
-        const texture = new THREE.Texture(vid);
+        const texture = new THREE.Texture(video);
         texture.colorSpace = THREE.SRGBColorSpace;
 
         let textureUpdateInterval = 0;
 
         let videoLayerInitialized = false;
 
-        /*! TODO:
-         * WebXRLayers (XRWebGLBinding, etc.) may not be available when Three.js
-         * initializes rendering, so we need to have a way of continuously
-         * detecting the environment and swapping out (i.e. GL layers v.s. XR layers)
-         * rendering methods as needed at the appropriate time.
-         */
-
-        function initVideoLayer(withWebXRLayer = false) {
+        function initVideoLayer (withWebXRLayer = false, renderer = null, scene = null, session = null, refSpace = null) {
 
             if (!withWebXRLayer) {
 
                 if (textureUpdateInterval < 1) {
                     textureUpdateInterval = setInterval(function () {
-                        if (vid.readyState >= vid.HAVE_CURRENT_DATA) {
+                        if (video.readyState >= video.HAVE_CURRENT_DATA) {
                             texture.needsUpdate = true;
                         }
                     }, 1000 / 24);
@@ -417,7 +293,7 @@ setTimeout(function init () {
                 const mesh1 = new THREE.Mesh(geometry1, material1);
                 // mesh1.rotation.y = - Math.PI / 2;
                 mesh1.layers.set(1); // display in left eye only
-                glVideoLayer.add(mesh1);
+                webGLVideo.add(mesh1);
 
                 // right
 
@@ -439,22 +315,81 @@ setTimeout(function init () {
                 const mesh2 = new THREE.Mesh(geometry2, material2);
                 // mesh2.rotation.y = - Math.PI / 2;
                 mesh2.layers.set(2); // display in right eye only
-                glVideoLayer.add(mesh2);
+                webGLVideo.add(mesh2);
 
-                scene.add(glVideoLayer);
+                scene.add(webGLVideo);
 
-            } else {
+            } else if (refSpace !== null) {
+
+                const xr = renderer.xr;
+                const gl = renderer.getContext();
+
+                let videoAngle = 96; // 110;
+                let videoLayout = "stereo-left-right";
+                let eqrtRadius = 10;
+                const videoWidth = 2064;
+                const videoHeight = 2208;
+                const videoReducer = 0.00090579710;
+
+                // Create background EQR video layer.
+                const mediaBinding = new XRMediaBinding(session);
+
+                console.log("Create XRQuadLayer with XRMediaBinding");
+
+                webXRLayerVideo = mediaBinding.createQuadLayer(
+                    video,
+                    {
+                        layout: 'stereo-left-right',
+                        width: videoWidth * videoReducer * 2,
+                        height: videoHeight * videoReducer * 2,
+                        space: refSpace,
+                        transform: new XRRigidTransform(
+                            {x: 0, y: (videoHeight * videoReducer) / 2, z: -5},
+                            {},
+                            {}
+                        )
+                    }
+                );
+
+                //  console.log("Create XREquirectLayer with XRMediaBinding");
+
+                //  webXRLayerVideo = mediaBinding.createEquirectLayer(
+                //      video,
+                //      {
+                //         // layout: 'stereo-left-right',
+                //         layout: videoLayout,
+                //         viewPixelWidth: videoWidth / (videoLayout === "stereo-left-right" ? 2 : 1),
+                //         viewPixelHeight: videoHeight / (videoLayout === "stereo-top-bottom" ? 2 : 1),
+                //         space: refSpace,
+                //         // // Rotate by 45 deg to avoid stereo conflict with the 3D geometry.
+                //         // transform: new XRRigidTransform(
+                //         //   {},
+                //         //   { x: 0, y: .28, z: 0, w: .96 }
+                //         // )
+                //         transform: new XRRigidTransform(
+                //             {x: 0, y: -5, z: -10},
+                //             // { x: -0.28, y: 0, z: 0, w: .96 }
+                //         )
+                //      }
+                //  );
+                //
+                // webXRLayerVideo.centralHorizontalAngle = Math.PI * videoAngle / 180;
+                // webXRLayerVideo.upperVerticalAngle = (Math.PI * videoAngle / 180) * 0.5; // Math.PI / 2.0 * 0.5;
+                // webXRLayerVideo.lowerVerticalAngle = -(Math.PI * videoAngle / 180) * 0.5; // -Math.PI / 2.0 * 0.5;
+                // webXRLayerVideo.radius = eqrtRadius;
+                
+                return webXRLayerVideo;
             }
 
             videoLayerInitialized = true;
         }
 
-        function clearVideoLayer (withWebXRLayer = false) {
+        function clearVideoLayer (withWebXRLayer = false, renderer = null, scene = null) {
 
             videoLayerInitialized = false;
 
             if (!withWebXRLayer) {
-                scene.remove(glVideoLayer);
+                scene.remove(webGLVideo);
             }
 
             if (textureUpdateInterval > 0) {
@@ -467,13 +402,12 @@ setTimeout(function init () {
         return ({
             initVideoLayer,
             clearVideoLayer,
-            glVideoLayer,
-            xrVideoLayer,
-            videoLayerInitialized
+            video,
+            videoLayerInitialized,
+            webGLVideo,
+            webXRLayerVideo
         });
     }
-
-    videoLayerManager = createVideoLayerManager(scene, video);
 
     async function getXRSession (xr) {
 
@@ -553,8 +487,8 @@ setTimeout(function init () {
 
         if (!!config && config.useXRLayers && !!config.videoLayerManager) { // && config.videoLayerManager.videoLayerInitialized) {
             // Transition to WebXRLayer
-            config.videoLayerManager.clearVideoLayer(!config.useXRLayers);
-            config.videoLayerManager.initVideoLayer(config.useXRLayers);
+            config.videoLayerManager.clearVideoLayer(!config.useXRLayers, renderer, scene, session);
+            config.videoLayerManager.initVideoLayer(config.useXRLayers, renderer, scene, session);
             config.videoLayerManager.videoLayerInitialized = true;
         }
 
@@ -575,9 +509,9 @@ setTimeout(function init () {
         if (videoLayerManager.videoLayerInitialized && !!config.videoLayerManager) {
             // Transition to WebGLLayer
             console.log("Clear video layer");
-            config.videoLayerManager.clearVideoLayer(true);
+            config.videoLayerManager.clearVideoLayer(true, renderer, scene, session);
             console.log("Init video layer");
-            config.videoLayerManager.initVideoLayer(false);
+            config.videoLayerManager.initVideoLayer(false, renderer, scene, session);
         }
     }
 
@@ -668,6 +602,8 @@ setTimeout(function init () {
     xr_button.style.opacity = 0.75;
     xr_button.disabled = false;
     delete xr_button.disabled;
+
+    videoLayerManager = createVideoLayerManager(video);
 
     canvas.addEventListener("webglcontextlost", (event) => {
         /* The context has been lost but can be restored */
