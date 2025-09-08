@@ -65,7 +65,7 @@ setTimeout(function init () {
 
     camera = new THREE.PerspectiveCamera( 70, previewWindow.width / previewWindow.height, 1, 2000 );
     camera.layers.enable( 1 ); // render left view when no stereo available
-    // camera.position.set(0.0, 0.0, 0.0);
+    camera.position.set(0.0, 0.0, 0.0);
 
     window.addEventListener('resize', function () {
 
@@ -162,7 +162,7 @@ setTimeout(function init () {
     container.append(loadManager.div);
 
     const controls = new OrbitControls(camera, container);
-    controls.target.set(0, 1.6, 0);
+    controls.target.set(0, 0.0, -0.5);
     // controls.update();
 
     async function setupEnvironment (renderer, scene, videoLayerManager) {
@@ -372,7 +372,11 @@ setTimeout(function init () {
     }
 
     async function onSessionStarted (session, config) {
-        await renderer.xr.setSession(session, config.useXRLayers);
+        try {
+            await renderer.xr.setSession(session, config.useXRLayers);
+        } catch (e) {
+            console.log("Error:", e);
+        }
         currentSession = session;
         currentSession["config"] = config;
         currentSession.addEventListener("end", onSessionEnded);
