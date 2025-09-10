@@ -30,7 +30,7 @@ setTimeout(function init () {
 
     console.log("Initiate WebXR Layers scene!");
 
-    let camera, renderer, player, video, videoLayerManager;
+    let camera, controls, renderer, player, video, videoLayerManager;
 
     const body = document.body;
 
@@ -75,6 +75,10 @@ setTimeout(function init () {
         renderer.setSize( window.innerWidth, window.innerHeight );
 
     }, false);
+
+    controls = new OrbitControls(camera, container);
+    controls.target.set(0, 0.0, -0.5);
+    // controls.update();
 
     player = new THREE.Group();
 
@@ -157,13 +161,9 @@ setTimeout(function init () {
         video.play();
     });
 
-    videoLayerManager = setupVideoLayerManager(video, 2064, 2208, 0.090579710, 0.0, 0.5);
+    videoLayerManager = setupVideoLayerManager(video, 2064, 2208, 0.090579710, 0.0, 0.0);
 
     container.append(loadManager.div);
-
-    const controls = new OrbitControls(camera, container);
-    controls.target.set(0, 0.0, -0.5);
-    // controls.update();
 
     async function setupEnvironment (renderer, scene, videoLayerManager) {
 
