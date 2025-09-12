@@ -166,18 +166,6 @@ setTimeout(function init () {
 
         currentSession = null;
 
-        // const sceneGroup = new THREE.Group();
-        //
-        // let sceneX = 0.0;
-        // let sceneY = -0.5;
-        // let sceneZ = -5.0;
-        //
-        // sceneGroup.translateX(sceneX);
-        // sceneGroup.translateY(sceneY);
-        // sceneGroup.translateZ(sceneZ);
-        //
-        // scene.add(sceneGroup);
-
         videoLayerManager.initVideoLayer(false, renderer, scene, currentSession);
 
         const updateScene = await setupScene(scene, camera, controllers, player, videoLayerManager);
@@ -463,19 +451,11 @@ setTimeout(function init () {
         await onSessionStarted(session, { useXRLayers, videoLayerManager });
 
         // Set camera position
-        // camera.position.z = 0;
         camera.position.y = 0;
+        // camera.position.z = 0;
 
+        player.position.y = camera.position.y;
         player.position.z = camera.position.z;
-        // player.position.y = camera.position.y;
-
-        const initSceneDataIn = {
-            "events": [
-                {
-                    "action": "play_sounds"
-                }
-            ]
-        }
 
         // container.style = `display: block; color: #FFF; font-size: 24px; text-align: center; background-color: #000; height: 100vh; max-width: ${previewWindow.width}px; max-height: ${previewWindow.height}px; overflow: hidden;`;
         xr_button.innerHTML = "Reload";
