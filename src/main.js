@@ -9,18 +9,11 @@ import { XRControllerModelFactory } from "three/addons/webxr/XRControllerModelFa
 import { HTMLMesh } from "three/addons/interactive/HTMLMesh";
 import Stats from "three/addons/libs/stats.module";
 
-import setupScene from "./setup/setupScene";
 import loadManager from "./setup/setupLoadManager";
+import setupScene from "./setup/setupScene";
 import setupPortalClippingPlanes from "./setup/setupPortalClippingPlanes";
 import setupVideoLayerManager from "./setup/setupVideoLayerManager";
-import {checkControllerAction} from "./controllers";
-
-// These definition make it possible to try different version THREE in the package deps
-const PlaneGeometry = ("PlaneBufferGeometry" in THREE) ?
-    THREE.PlaneBufferGeometry : THREE.PlaneGeometry;
-
-const SphereGeometry = ("SphereBufferGeometry" in THREE) ?
-    THREE.SphereBufferGeometry : THREE.SphereGeometry;
+import { checkControllerAction } from "./controllers";
 
 let currentSession = null;
 let initXRLayers = true;
