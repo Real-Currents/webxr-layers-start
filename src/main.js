@@ -154,7 +154,7 @@ setTimeout(function init () {
         video.play();
     });
 
-    videoLayerManager = setupVideoLayerManager(video, 2064, 2208, 0.090579710, 0.0, 0.0);
+    videoLayerManager = setupVideoLayerManager(video, 2064, 2208, 0.090579710, 0.0, -0.5);
 
     container.append(loadManager.div);
 
