@@ -23,8 +23,28 @@ export default function setupVideoLayerManager (
     let webGLVideo = new THREE.Group();
     let webXRLayerVideo = null;
 
+    // Detect Wolvic browser
+    const isWolvic = /Wolvic/i.test(navigator.userAgent);
+
     const texture = new THREE.Texture(video);
-    texture.colorSpace = THREE.SRGBColorSpace;
+
+    // Starting with Three.js r152, a "linear workflow" was enabled by default,
+    // where sRGB input colors are converted to linear color space for rendering,
+    // then converted back to sRGB for display. Updates to Color Management in
+    // three.js r152 - [Discussion - three.js forum](https://discourse.threejs.org/t/updates-to-color-management-in-three-js-r152/50791)
+
+    // Wolvic (based on Chromium/Firefox Reality) may handle WebGL color spaces
+    // differently than Meta's Quest browser, leading to this double-conversion
+    // issue where the video gets gamma-corrected twice.
+    if (isWolvic) {
+        // Wolvic applies extra gamma, so we need to pre-compensate
+        // by providing "under-corrected" input
+        texture.colorSpace = THREE.LinearSRGBColorSpace;
+        // ... sort of works, but color space is still visibly "washed out".
+    } else {
+        // Quest browser and others handle sRGB correctly
+        texture.colorSpace = THREE.SRGBColorSpace;
+    }
 
     let textureUpdateInterval = 0;
 
@@ -48,7 +68,7 @@ export default function setupVideoLayerManager (
             const geometry1 = new PlaneGeometry(meshWidth, meshHeight, 1, 1);
             // invert the geometry on the x-axis so that all of the faces point inward
             // geometry1.scale( - 1, 1, 1 );
-            geometry1.translate(videoCenterX + videoReducer, 0.0, videoDepthZ);
+            geometry1.translate(videoCenterX + videoReducer, videoCenterY + meshHeight / 2, videoDepthZ);
 
             const uvs1 = geometry1.attributes.uv.array;
 
@@ -70,7 +90,7 @@ export default function setupVideoLayerManager (
             // const geometry2 = new SphereGeometry( 500, 60, 40 );
             const geometry2 = new PlaneGeometry(meshWidth, meshHeight, 1, 1);
             // geometry2.scale( - 1, 1, 1 );
-            geometry2.translate(videoCenterX - videoReducer, 0.0, videoDepthZ)
+            geometry2.translate(videoCenterX - videoReducer, videoCenterY + meshHeight / 2, videoDepthZ)
 
             const uvs2 = geometry2.attributes.uv.array;
 
