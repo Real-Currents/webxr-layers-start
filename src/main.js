@@ -179,6 +179,10 @@ setTimeout(function init () {
             const xr = renderer.xr;
             const gl = renderer.getContext();
 
+            // Three.js r170+ automatically inherits and enforces layer masks from the 
+            // main camera to the XR cameras, and there's no way to override it after the 
+            // fact because it happens in the WebXRManager's internal update cycle.
+            // Change the main camera's layers based on whether you're in VR mode or not... 
             if (!xr.isPresenting) {
                 // Non-VR mode: enable layer 1 for 2D viewing
                 camera.layers.mask = 3; // 0b011 = layers 0 and 1
@@ -187,7 +191,8 @@ setTimeout(function init () {
                 // Let WebXRManager add layer 1 and 2 automatically per eye
                 camera.layers.mask = 1; // 0b001 = layer 0 only
             }
-    
+
+            // ... instead of trying to fix the XR cameras directly, which get overwritten (i.e., like so...)
             if (currentSession && xr.isPresenting) {
     
                 const xrCamera = xr.getCamera(camera); // gets XR camera array
@@ -214,12 +219,15 @@ setTimeout(function init () {
                 //     ...xrCamera.cameras
                 // ]);
             }
+            // This is actually a pretty significant API change that wasn't well-documented in the migration guide. 
+            // The old pattern (manually configuring XR camera layers) was replaced with an automatic inheritance system.
+            
 
             waiting_for_confirmation = checkControllerAction(controllers, data, currentSession, waiting_for_confirmation);
 
             stats.begin();
 
-            const clippingPlanes  = setupPortalClippingPlanes(renderer, camera);
+            // const clippingPlanes  = setupPortalClippingPlanes(renderer, camera);
 
             let guiLayer,
                 equirectLayer,
@@ -301,10 +309,10 @@ setTimeout(function init () {
                 delta,
                 time,
                 (data.hasOwnProperty("action")) ? data : null,
-                null,
-                [
-                    ...clippingPlanes
-                ]
+                null
+                //, [
+                //     ...clippingPlanes
+                // ]
             );
 
             renderer.render(scene, camera);
